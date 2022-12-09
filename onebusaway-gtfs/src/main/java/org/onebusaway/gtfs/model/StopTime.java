@@ -44,7 +44,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
   private int arrivalTime = MISSING_VALUE;
 
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int departureTime = MISSING_VALUE;
 
   /**
@@ -52,24 +52,30 @@ public final class StopTime extends IdentityBean<Integer> implements
    * GTFS-Flex v2.1 renamed this field. Use {@link #startPickupDropOffWindow} instead.
    */
   @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int minArrivalTime = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "start_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int startPickupDropOffWindow = MISSING_VALUE;
+
+  @CsvField(optional = true, name = "start_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
+  private int startPickupDropOffWindowWithUnderscore = MISSING_VALUE;
 
   /**
    * @deprecated
    * GTFS-Flex v2.1 renamed this field. Use {@link #endPickupDropOffWindow} instead.
    */
   @Deprecated
-  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class)
-  private int maxDepartureTime = MISSING_VALUE;
+  @CsvField(optional = true, mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
+  private int maxDepartureTime;
 
-  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class)
+  @CsvField(optional = true, name = "end_pickup_dropoff_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
   private int endPickupDropOffWindow = MISSING_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, name = "end_pickup_drop_off_window", mapping = StopTimeFieldMappingFactory.class, defaultValue = "-999")
+  private int endPickupDropOffWindowWithUnderscore = MISSING_VALUE;
+
+  @CsvField(optional = true, defaultValue = "-999")
   private int timepoint = MISSING_VALUE;
 
   private int stopSequence;
@@ -89,13 +95,13 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, defaultValue = "0")
   private int dropOffType;
 
-  @CsvField(optional = true)
-  private double shapeDistTraveled = MISSING_VALUE;
+  @CsvField(optional = true, defaultValue = "-999")
+  private double shapeDistTraveled;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "1")
   private int continuousPickup = MISSING_FLEX_VALUE;
 
-  @CsvField(optional = true)
+  @CsvField(optional = true, defaultValue = "1")
   private int continuousDropOff = MISSING_FLEX_VALUE;
 
   @CsvField(optional = true, name = "start_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
@@ -104,11 +110,11 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "end_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area endServiceArea;
 
-  @CsvField(optional = true)
-  private double startServiceAreaRadius = MISSING_VALUE;
+  @CsvField(optional = true, defaultValue = "-999")
+  private double startServiceAreaRadius;
 
-  @CsvField(optional = true)
-  private double endServiceAreaRadius = MISSING_VALUE;
+  @CsvField(optional = true, defaultValue = "-999")
+  private double endServiceAreaRadius;
 
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
@@ -137,17 +143,17 @@ public final class StopTime extends IdentityBean<Integer> implements
   private Note note;
 
   // See https://github.com/MobilityData/gtfs-flex/blob/master/spec/reference.md
-  @CsvField(optional = true, name = "mean_duration_factor")
+  @CsvField(optional = true, name = "mean_duration_factor", defaultValue = "-999.0")
   private double meanDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "mean_duration_offset")
+  @CsvField(optional = true, name = "mean_duration_offset", defaultValue = "-999.0")
   private double meanDurationOffset = MISSING_VALUE;
     
-  @CsvField(optional = true, name = "safe_duration_factor")
-  private double safeDurationFactor = MISSING_VALUE;
+  @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")
+  private double safeDurationFactor= MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset")
-  private double safeDurationOffset = MISSING_VALUE;
+  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999")
+  private double safeDurationOffset;
 
   @CsvField(optional = true, name = "free_running_flag")
   private String freeRunningFlag;
@@ -338,7 +344,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   public int getStartPickupDropOffWindow() {
-    if (startPickupDropOffWindow != MISSING_VALUE) {
+    if (startPickupDropOffWindowWithUnderscore != MISSING_VALUE) {
+      return startPickupDropOffWindowWithUnderscore;
+    } else
+      if (startPickupDropOffWindow != MISSING_VALUE) {
       return startPickupDropOffWindow;
     } else {
       return minArrivalTime;
@@ -360,7 +369,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   }
 
   public int getEndPickupDropOffWindow() {
-    if (endPickupDropOffWindow != MISSING_VALUE) {
+    if (endPickupDropOffWindowWithUnderscore != MISSING_VALUE) {
+      return endPickupDropOffWindowWithUnderscore;
+    } else
+      if (endPickupDropOffWindow != MISSING_VALUE) {
       return endPickupDropOffWindow;
     } else {
       return maxDepartureTime;
@@ -370,6 +382,22 @@ public final class StopTime extends IdentityBean<Integer> implements
   public void setEndPickupDropOffWindow(int endPickupDropOffWindow) {
     this.endPickupDropOffWindow = endPickupDropOffWindow;
   }
+
+  public int getEndPickupDropOffWindowWithUnderscore() {
+    return endPickupDropOffWindowWithUnderscore;
+  }
+
+//  public void setEndPickupDropOffWindowWithUnderscore(int endPickupDropOffWindowWithUnderscore) {
+//    this.endPickupDropOffWindowWithUnderscore = endPickupDropOffWindowWithUnderscore;
+//  }
+
+  public int getStartPickupDropOffWindowWithUnderscore() {
+    return startPickupDropOffWindowWithUnderscore;
+  }
+
+//  public void setStartPickupDropOffWindowWithUnderscore(int startPickupDropOffWindowWithUnderscore) {
+//    this.startPickupDropOffWindowWithUnderscore = startPickupDropOffWindowWithUnderscore;
+//  }
 
   @Override
   public boolean isTimepointSet() {
