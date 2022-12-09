@@ -47,11 +47,10 @@ public class StopTimeWithUnderscoreTest {
         _gtfs.putDefaultTrips();
         _gtfs.putDefaultStops();
         _gtfs.putLines("stop_times.txt",
-                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,mean_duration_factor,",
-                "T10-0,100,0,,08:00:00,", "T10-0,200,1,05:55:55,09:00:00,");
+                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,end_pickup_drop_off_window",
+                "T10-0,100,0,05:55:55,08:00:00,08:23:23", "T10-0,200,1,05:55:55,09:00:00,08:44:44");
 
         GtfsRelationalDao dao = _gtfs.read();
-        List<StopTime> stopTimes = new ArrayList<>(dao.getAllStopTimes());
         assertEquals(2, dao.getAllStopTimes().size());
 
         GtfsWriter writer = new GtfsWriter();
@@ -60,19 +59,14 @@ public class StopTimeWithUnderscoreTest {
         writer.run(dao);
 
         Scanner scan = new Scanner(new File(_tmpDirectory + "/stop_times.txt"));
-        boolean foundEmptyColumn = false;
-        boolean foundProperArrivalTime = false;
+        boolean foundUnderscoreParam = false;
         while(scan.hasNext()){
             String line = scan.nextLine();
-            if(line.contains("mean_duration_factor")){
-                foundEmptyColumn = true;
-            }
-            if(line.contains("arrival_time")){
-                foundProperArrivalTime = true;
+            if(line.contains("end_pickup_dropoff_window")){
+                foundUnderscoreParam = true;
             }
         }
-        assertFalse("Empty Column not properly removed", foundEmptyColumn);
-        assertTrue("Column unexpectedly removed", foundProperArrivalTime);
+        assertTrue("Column without underscore was not found", foundUnderscoreParam);
     }
 
     @Test
@@ -81,8 +75,8 @@ public class StopTimeWithUnderscoreTest {
         _gtfs.putDefaultTrips();
         _gtfs.putDefaultStops();
         _gtfs.putLines("stop_times.txt",
-                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,mean_duration_factor,end_pickup_dropoff_window",
-                "T10-0,100,0,,08:00:00,,03:33:33", "T10-0,200,1,05:55:55,09:00:00,09:00:00,02:22:22");
+                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,end_pickup_dropoff_window",
+                "T10-0,100,0,05:55:55,08:00:00,08:23:23", "T10-0,200,1,05:55:55,09:00:00,08:44:44");
 
         GtfsRelationalDao dao = _gtfs.read();
         assertEquals(2, dao.getAllStopTimes().size());

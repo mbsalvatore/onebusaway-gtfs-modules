@@ -110,10 +110,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   @CsvField(optional = true, name = "end_service_area_id", mapping = EntityFieldMappingFactory.class, order = -2)
   private Area endServiceArea;
 
-  @CsvField(optional = true, defaultValue = "-999")
+  @CsvField(optional = true, defaultValue = "-999.0")
   private double startServiceAreaRadius;
 
-  @CsvField(optional = true, defaultValue = "-999")
+  @CsvField(optional = true, defaultValue = "-999.0")
   private double endServiceAreaRadius;
 
   @CsvField(ignore = true)
@@ -150,10 +150,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   private double meanDurationOffset = MISSING_VALUE;
     
   @CsvField(optional = true, name = "safe_duration_factor", defaultValue = "-999.0")
-  private double safeDurationFactor= MISSING_VALUE;
+  private double safeDurationFactor = MISSING_VALUE;
 
-  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999")
-  private double safeDurationOffset;
+  @CsvField(optional = true, name = "safe_duration_offset", defaultValue = "-999.0")
+  private double safeDurationOffset = MISSING_VALUE;
 
   @CsvField(optional = true, name = "free_running_flag")
   private String freeRunningFlag;
@@ -387,17 +387,17 @@ public final class StopTime extends IdentityBean<Integer> implements
     return endPickupDropOffWindowWithUnderscore;
   }
 
-//  public void setEndPickupDropOffWindowWithUnderscore(int endPickupDropOffWindowWithUnderscore) {
-//    this.endPickupDropOffWindowWithUnderscore = endPickupDropOffWindowWithUnderscore;
-//  }
+  public void setEndPickupDropOffWindowWithUnderscore(int endPickupDropOffWindowWithUnderscore) {
+    this.endPickupDropOffWindowWithUnderscore = endPickupDropOffWindowWithUnderscore;
+  }
 
   public int getStartPickupDropOffWindowWithUnderscore() {
     return startPickupDropOffWindowWithUnderscore;
   }
 
-//  public void setStartPickupDropOffWindowWithUnderscore(int startPickupDropOffWindowWithUnderscore) {
-//    this.startPickupDropOffWindowWithUnderscore = startPickupDropOffWindowWithUnderscore;
-//  }
+  public void setStartPickupDropOffWindowWithUnderscore(int startPickupDropOffWindowWithUnderscore) {
+    this.startPickupDropOffWindowWithUnderscore = startPickupDropOffWindowWithUnderscore;
+  }
 
   @Override
   public boolean isTimepointSet() {

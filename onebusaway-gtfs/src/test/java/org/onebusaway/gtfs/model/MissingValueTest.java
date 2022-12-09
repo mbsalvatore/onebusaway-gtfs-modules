@@ -51,7 +51,7 @@ public class MissingValueTest {
         _gtfs.putDefaultStops();
         _gtfs.putLines("stop_times.txt",
                 "trip_id,stop_id,stop_sequence,arrival_time,departure_time,mean_duration_factor",
-                "T10-0,100,0,,08:00:00,", "T10-0,200,1,05:55:55,09:00:00,09:00:00");
+                "T10-0,100,0,,08:00:00,", "T10-0,200,1,05:55:55,09:00:00,");
 
         GtfsRelationalDao dao = _gtfs.read();
         assertEquals(2, dao.getAllStopTimes().size());
@@ -62,14 +62,19 @@ public class MissingValueTest {
         writer.run(dao);
 
         Scanner scan = new Scanner(new File(_tmpDirectory + "/stop_times.txt"));
-        boolean foundUnderscoreParam = false;
+        boolean foundEmptyColumn = false;
+        boolean foundProperArrivalTime = false;
         while(scan.hasNext()){
             String line = scan.nextLine();
-            if(line.contains("end_pickup_dropoff_window")){
-                foundUnderscoreParam = true;
+            if(line.contains("mean_duration_factor")){
+                foundEmptyColumn = true;
+            }
+            if(line.contains("arrival_time")){
+                foundProperArrivalTime = true;
             }
         }
-        assertTrue("Column without was not found", foundUnderscoreParam);
+        assertFalse("Empty Column not properly removed", foundEmptyColumn);
+        assertTrue("Column unexpectedly removed", foundProperArrivalTime);
     }
 
     @Test
