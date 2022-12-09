@@ -111,10 +111,10 @@ public final class StopTime extends IdentityBean<Integer> implements
   private Area endServiceArea;
 
   @CsvField(optional = true, defaultValue = "-999.0")
-  private double startServiceAreaRadius;
+  private double startServiceAreaRadius = MISSING_VALUE;
 
   @CsvField(optional = true, defaultValue = "-999.0")
-  private double endServiceAreaRadius;
+  private double endServiceAreaRadius = MISSING_VALUE;
 
   @CsvField(ignore = true)
   private transient StopTimeProxy proxy = null;
@@ -346,8 +346,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   public int getStartPickupDropOffWindow() {
     if (startPickupDropOffWindowWithUnderscore != MISSING_VALUE) {
       return startPickupDropOffWindowWithUnderscore;
-    } else
-      if (startPickupDropOffWindow != MISSING_VALUE) {
+    } else if (startPickupDropOffWindow != MISSING_VALUE) {
       return startPickupDropOffWindow;
     } else {
       return minArrivalTime;
@@ -371,8 +370,7 @@ public final class StopTime extends IdentityBean<Integer> implements
   public int getEndPickupDropOffWindow() {
     if (endPickupDropOffWindowWithUnderscore != MISSING_VALUE) {
       return endPickupDropOffWindowWithUnderscore;
-    } else
-      if (endPickupDropOffWindow != MISSING_VALUE) {
+    } else if (endPickupDropOffWindow != MISSING_VALUE) {
       return endPickupDropOffWindow;
     } else {
       return maxDepartureTime;
