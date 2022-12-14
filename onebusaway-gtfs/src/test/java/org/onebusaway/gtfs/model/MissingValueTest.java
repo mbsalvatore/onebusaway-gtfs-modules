@@ -78,6 +78,34 @@ public class MissingValueTest {
     }
 
     @Test
+    public void testStartingWithMissingValue() throws IOException {
+        _gtfs.putMinimal();
+        _gtfs.putDefaultTrips();
+        _gtfs.putDefaultStops();
+        _gtfs.putLines("stop_times.txt",
+                "trip_id,stop_id,stop_sequence,arrival_time,departure_time,timepoint",
+                "T10-0,100,0,,08:00:00,-999", "T10-0,200,1,05:55:55,09:00:00,-999");
+
+        GtfsRelationalDao dao = _gtfs.read();
+        assertEquals(2, dao.getAllStopTimes().size());
+
+        GtfsWriter writer = new GtfsWriter();
+        System.out.println("outputlocation: " + _tmpDirectory );
+        writer.setOutputLocation(_tmpDirectory);
+        writer.run(dao);
+
+        Scanner scan = new Scanner(new File(_tmpDirectory + "/stop_times.txt"));
+        boolean foundTimepoint = false;
+        while(scan.hasNext()){
+            String line = scan.nextLine();
+            if(line.contains("timepoint")){
+                foundTimepoint = true;
+            }
+        }
+        assertFalse("Empty Column not properly removed", foundTimepoint);
+    }
+
+    @Test
     public void testPutMinimal() throws IOException {
         _gtfs.putMinimal();
         // Just make sure it parses without throwing an error.
